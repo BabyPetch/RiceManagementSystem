@@ -25,7 +25,8 @@
 
             if (isset($_SESSION['user_login'])) {
                 $user_id = $_SESSION['user_login'];
-                $stmt = $conn->query("SELECT * FROM users WHERE id = $user_id");
+                $stmt = $conn->prepare("SELECT * FROM users WHERE id = :id");
+                $stmt->bindParam(":id", $admin_id);
                 $stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
             }

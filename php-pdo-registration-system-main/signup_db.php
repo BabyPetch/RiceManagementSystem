@@ -43,8 +43,8 @@
                 $check_email->execute();
                 $row = $check_email->fetch(PDO::FETCH_ASSOC);
 
-                if ($row['email'] == $email) {
-                    $_SESSION['warning'] = "มีอีเมลนี้อยู่ในระบบแล้ว <a href='signin.php'>คลิ๊กที่นี่</a> เพื่อเข้าสู่ระบบ";
+                if ($check_email->rowCount() > 0) {
+                    $_SESSION['warning'] = "มีอีเมลนี้อยู่ในระบบแล้ว";
                     header("location: index.php");
                 } else if (!isset($_SESSION['error'])) {
                     $passwordHash = password_hash($password, PASSWORD_DEFAULT);

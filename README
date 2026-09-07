@@ -1,7 +1,128 @@
-echo "# ProjectData_RiceWeb" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/BabyPetch/ProjectData_RiceWeb.git
-git push -u origin main
+# PHP PDO Registration System
+
+ระบบสมัครสมาชิกและเข้าสู่ระบบ พัฒนาด้วย PHP + PDO + MySQL  
+จัดทำขึ้นเพื่อการเรียนรู้ในช่วงปีที่ 2 ของการศึกษา
+
+---
+
+## ภาพรวมของโปรเจกต์
+
+โปรเจกต์นี้เป็นระบบลงทะเบียนและล็อกอินผู้ใช้งาน ที่ฝึกใช้งาน PHP Data Objects (PDO) สำหรับเชื่อมต่อฐานข้อมูล MySQL โดยรองรับการแบ่งบทบาทผู้ใช้งาน (Role-based) ออกเป็น Admin และ User
+
+---
+
+## ฟีเจอร์หลัก
+
+- **สมัครสมาชิก** — กรอกชื่อ นามสกุล อีเมล และรหัสผ่าน พร้อม validation ฝั่ง server
+- **เข้าสู่ระบบ** — ตรวจสอบข้อมูลผู้ใช้ และแยกหน้าระหว่าง Admin / User อัตโนมัติ
+- **Role-based Access** — Admin เข้าหน้า `admin.php`, User ทั่วไปเข้าหน้า `user.php`
+- **Secure Password** — เข้ารหัสด้วย `password_hash()` และตรวจสอบด้วย `password_verify()`
+- **Session Management** — ใช้ PHP Session สำหรับจัดการสถานะการล็อกอิน
+- **Prepared Statements** — ป้องกัน SQL Injection ด้วย PDO Prepared Statements
+
+---
+
+## โครงสร้างไฟล์
+
+```
+php-pdo-registration-system-main/
+├── config/
+│   └── db.php          # ตั้งค่าการเชื่อมต่อฐานข้อมูล (PDO)
+├── index.php           # หน้าสมัครสมาชิก
+├── signup_db.php       # ประมวลผลการสมัครสมาชิก
+├── signin.php          # หน้าเข้าสู่ระบบ
+├── signin_db.php       # ประมวลผลการเข้าสู่ระบบ
+├── user.php            # หน้าหลักสำหรับ User
+├── admin.php           # หน้าหลักสำหรับ Admin
+└── logout.php          # ออกจากระบบ
+```
+
+---
+
+## เทคโนโลยีที่ใช้
+
+| เทคโนโลยี | รายละเอียด |
+|---|---|
+| PHP | Backend logic และ Session management |
+| PDO (PHP Data Objects) | เชื่อมต่อและ Query ฐานข้อมูล |
+| MySQL | จัดเก็บข้อมูลผู้ใช้งาน |
+| Bootstrap 5 | UI / Frontend styling |
+| HTML/CSS | โครงสร้างหน้าเว็บ |
+
+---
+
+## การติดตั้ง
+
+### สิ่งที่ต้องมี
+- PHP 7.4 ขึ้นไป
+- MySQL / MariaDB
+- Web server (เช่น Apache ผ่าน XAMPP หรือ WAMP)
+
+### ขั้นตอน
+
+1. **Clone หรือ Download** โปรเจกต์นี้ลงในโฟลเดอร์ `htdocs` (XAMPP) หรือ `www` (WAMP)
+
+2. **สร้างฐานข้อมูล** ใน phpMyAdmin หรือ MySQL CLI:
+
+```sql
+CREATE DATABASE registration_system;
+
+USE registration_system;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(100) NOT NULL,
+    lastname VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    urole ENUM('user', 'admin') DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+3. **ตั้งค่าการเชื่อมต่อ** ในไฟล์ `config/db.php`:
+
+```php
+$servername = "localhost";
+$username   = "root";      // ชื่อผู้ใช้ MySQL ของคุณ
+$password   = "";          // รหัสผ่าน MySQL ของคุณ
+```
+
+4. **เปิดเบราว์เซอร์** แล้วไปที่:
+
+```
+http://localhost/php-pdo-registration-system-main/
+```
+
+---
+
+## การใช้งาน
+
+1. ไปที่หน้าแรก (`index.php`) เพื่อสมัครสมาชิก
+2. หลังสมัครสำเร็จ ระบบจะแจ้งให้ไปหน้า Login (`signin.php`)
+3. เมื่อล็อกอินแล้ว ระบบจะพาไปหน้า `user.php` หรือ `admin.php` ตาม Role ที่กำหนด
+4. กดปุ่ม Logout เพื่อออกจากระบบ
+
+---
+
+## Validation ที่มีอยู่
+
+- ตรวจสอบว่ากรอกข้อมูลครบทุกช่อง
+- ตรวจสอบรูปแบบอีเมลด้วย `FILTER_VALIDATE_EMAIL`
+- รหัสผ่านต้องมีความยาว 5–20 ตัวอักษร
+- รหัสผ่านและยืนยันรหัสผ่านต้องตรงกัน
+- ตรวจสอบอีเมลซ้ำในระบบก่อนสมัคร
+
+---
+
+## หมายเหตุ
+
+โปรเจกต์นี้จัดทำขึ้นเพื่อการเรียนรู้ในระดับชั้นปีที่ 2  
+อาจมีส่วนที่ยังสามารถพัฒนาต่อได้ เช่น การเพิ่ม CSRF Token, Email Verification, หรือ Frontend Validation เพิ่มเติม
+
+---
+
+## ผู้พัฒนา
+
+**BabyPetch**  
+GitHub: [github.com/BabyPetch/ProjectData_RiceWeb](https://github.com/BabyPetch/ProjectData_RiceWeb)

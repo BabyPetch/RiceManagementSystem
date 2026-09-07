@@ -30,7 +30,7 @@
 
                 if ($check_data->rowCount() > 0) {
 
-                    if ($email == $row['email']) {
+                    if ($check_data->rowCount() > 0) {
                         if (password_verify($password, $row['password'])) {
                             if ($row['urole'] == 'admin') {
                                 $_SESSION['admin_login'] = $row['id'];
